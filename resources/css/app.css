@@ -1,0 +1,130 @@
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+ ::-webkit-scrollbar-track {
+    display: none;
+}
+
+.custom-calendar.vc-container {
+    --day-border: 1px solid #b8c2cc;
+    --day-border-highlight: 1px solid #b8c2cc;
+    --day-width: 90px;
+    --day-height: 90px;
+    --weekday-bg: #f8fafc;
+    --weekday-border: 1px solid #eaeaea;
+    border-radius: 0;
+    width: 100%;
+}
+
+.custom-calendar.vc-container .vc-header {
+    background-color: #f1f5f8;
+    padding: 10px 0;
+}
+
+.custom-calendar.vc-container .vc-weeks {
+    padding: 0;
+}
+
+.custom-calendar.vc-container .vc-weekday {
+    background-color: var(--weekday-bg);
+    border-bottom: var(--weekday-border);
+    border-top: var(--weekday-border);
+    padding: 5px 0;
+}
+
+.custom-calendar.vc-container .vc-day:not(.on-right) {
+    border-right: var(--day-border);
+}
+
+.custom-calendar.vc-container .vc-day:not(.on-bottom) {
+    border-bottom: var(--day-border);
+}
+
+.custom-calendar.vc-container .vc-day {
+    padding: 0 5px 3px;
+    text-align: left;
+    height: var(--day-height);
+    min-width: var(--day-width);
+    background-color: #fff;
+}
+
+.bg-red-600 {
+    --bg-opacity: 1;
+    background-color: #e53e3e;
+    background-color: rgba(229, 62, 62, var(--bg-opacity));
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.text-gray-900 {
+    --text-opacity: 1;
+    color: #1a202c;
+    color: rgba(26, 32, 44, var(--text-opacity));
+}
+
+.text-white {
+    --text-opacity: 1;
+    color: #fff;
+    color: rgba(255, 255, 255, var(--text-opacity));
+}
+
+.bg-blue-500 {
+    --bg-opacity: 1;
+    background-color: #4299e1;
+    background-color: rgba(66, 153, 225, var(--bg-opacity));
+}
+
+.bg-pink-500 {
+    --bg-opacity: 1;
+    background-color: #ed64a6;
+    background-color: rgba(237, 100, 166, var(--bg-opacity));
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.text-sm {
+    font-size: .875rem;
+}
+
+.bg-teal-500 {
+    --bg-opacity: 1;
+    background-color: #38b2ac;
+    background-color: rgba(56, 178, 172, var(--bg-opacity));
+}
+
+.leading-tight {
+    line-height: 1.25;
+}
+
+.p-1 {
+    padding: 0.25rem;
+}
+
+.mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.mt-0 {
+    margin-top: 0;
+}
+
+.rounded-sm {
+    border-radius: 0.125rem;
+}
+
+.text-xs {
+    font-size: .75rem;
+}
