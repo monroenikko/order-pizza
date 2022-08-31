@@ -24,7 +24,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      pizza_order: ''
+      hasError: false,
+      pizza_order: '',
+      messageError: [],
+      order_items: [],
+      hasOrder: false
     };
   },
   methods: {
@@ -38,54 +42,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     parseOrder: function parseOrder(pmlOrder) {
       var xml = this.convertToXml(pmlOrder);
       var order = xml.getElementsByTagName('order')[0];
-      var parsedString = "<ul class=\"order\">\n                    <li>Order ".concat(order.getAttribute('number'), ":");
       var order_pizza = [];
       var pizzas = order.getElementsByTagName('pizza');
 
       if (pizzas.length) {
-        parsedString += "<ul class=\"pizzas\">";
-
         for (var i = 0; i < pizzas.length; i++) {
           var pizza = pizzas[i];
           var size = pizza.getElementsByTagName('size')[0].textContent;
           var crust = pizza.getElementsByTagName('crust')[0].textContent;
           var pizzaType = pizza.getElementsByTagName('type')[0].textContent;
-          parsedString += "<li>Pizza ".concat(pizza.getAttribute('number'), " - ").concat(size, ", ").concat(crust, ", ").concat(pizzaType);
           var custom_toppings = [];
 
           if (pizzaType.toLowerCase() === 'custom') {
             var toppingAreas = pizza.getElementsByTagName('toppings');
 
             if (toppingAreas.length) {
-              parsedString += "<ul class=\"topping-areas\">";
-
               for (var j = 0; j < toppingAreas.length; j++) {
                 var toppingArea = toppingAreas[j];
-                parsedString += "<li>Toppings ".concat(this.pizzaDetails.toppingAreas[toppingArea.getAttribute('area')], ":");
                 var custom_item = [];
                 var toppings = toppingArea.getElementsByTagName('item');
 
                 if (toppings.length) {
-                  parsedString += "<ul class=\"toppings\">";
-
                   for (var k = 0; k < toppings.length; k++) {
-                    parsedString += "<li>".concat(toppings[k].textContent, "</li>");
                     custom_item.push({
                       'topping': toppings[k].textContent
                     });
                   }
-
-                  parsedString += "</ul>";
                 }
 
                 custom_toppings.push({
                   'area': this.pizzaDetails.toppingAreas[toppingArea.getAttribute('area')],
                   custom_item: custom_item
                 });
-                parsedString += "</li>";
               }
-
-              parsedString += "</ul>";
             }
           }
 
@@ -96,13 +85,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             pizza_type: pizzaType,
             custom_toppings: custom_toppings
           });
-          parsedString += "</li>";
         }
-
-        parsedString += "</ul>";
       }
 
-      parsedString += "</li>\n                    </ul>";
       this.storeData(order.getAttribute('number'), order_pizza);
       return parsedString;
     },
@@ -110,35 +95,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var form, res, i;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
-                return (0,_shared_api_services__WEBPACK_IMPORTED_MODULE_0__.saveOrderItem)(order_number, order_pizza).then(function (res) {
+                form = {
+                  order_items: {
+                    order_number: order_number,
+                    order_pizzas: order_pizza
+                  }
+                };
+                _context.next = 3;
+                return _this.callApi("post", 'orders', form);
+
+              case 3:
+                res = _context.sent;
+
+                if (res.status === 200) {
                   _this.toastNotif(res.data.message, 'is-success');
-                })["catch"](function (error) {
-                  console.log(error.response.data);
-                  this.notif('Something went wrong', 'is-danger');
 
-                  if (err.response.status == 422) {
-                    for (var i in error.response.data.errors) {
-                      this.currentPasswordMessage = res.data.errors.current_password[0];
+                  _this.order_items = res.data.results;
+                  _this.hasError = false;
+                  _this.hasOrder = true;
+                } else {
+                  _this.hasError = true;
 
-                      if (this.currentPasswordMessage !== null) {
-                        this.currentPasswordError = true;
-                      }
-
-                      this.newPasswordMessage = res.data.errors.new_password[0];
-
-                      if (this.newPasswordMessage !== null) {
-                        this.newPasswordError = true;
-                      }
+                  if (res.status === 422) {
+                    for (i in res.data.errors) {
+                      _this.messageError.push(res.data.errors['order_items.order_number'][0]);
                     }
                   }
-                });
+                }
 
-              case 2:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -191,7 +181,21 @@ var render = function render() {
     }
   }, [_vm._v("Order")])], 1)]), _vm._v(" "), _c("div", {
     staticClass: "card-content"
-  }, [_c("div", {
+  }, [_c("p", [_c("b", [_vm._v("Pizza Types:")]), _vm._v(" "), _vm._l(_vm.pizzaDetails.types, function (data, i) {
+    return _c("span", {
+      key: i
+    }, [_vm._v(_vm._s(data) + " " + _vm._s(_vm.pizzaDetails.types.length === i + 1 ? "" : " | ") + " ")]);
+  })], 2), _vm._v(" "), _c("p", [_c("b", [_vm._v("Pizza Sizes:")]), _vm._v(" "), _vm._l(_vm.pizzaDetails.sizes, function (data, i) {
+    return _c("span", {
+      key: i
+    }, [_vm._v(_vm._s(data) + " " + _vm._s(_vm.pizzaDetails.sizes.length === i + 1 ? "" : " | ") + " ")]);
+  })], 2), _vm._v(" "), _c("p", {
+    staticClass: "mb-5"
+  }, [_c("b", [_vm._v("Pizza Crusts:")]), _vm._v(" "), _vm._l(_vm.pizzaDetails.crusts, function (data, i) {
+    return _c("span", {
+      key: i
+    }, [_vm._v(_vm._s(data) + " " + _vm._s(_vm.pizzaDetails.crusts.length === i + 1 ? "" : " | ") + " ")]);
+  })], 2), _vm._v(" "), _c("div", {
     staticClass: "columns"
   }, [_c("div", {
     staticClass: "column"
@@ -207,8 +211,10 @@ var render = function render() {
   }, [_c("b-field", {
     attrs: {
       label: "PML",
-      type: "is-danger",
-      message: "This email is invalid"
+      type: {
+        "is-danger": _vm.hasError
+      },
+      message: _vm.messageError
     }
   }, [_c("b-input", {
     attrs: {
@@ -230,9 +236,24 @@ var render = function render() {
     attrs: {
       label: "ORDER RESULT: "
     }
-  }, [_c("div", {
-    ref: "order_display"
-  })])], 1)])])]);
+  }, [_vm.hasOrder ? _c("div", {
+    staticClass: "content"
+  }, [_c("h3", [_vm._v("\n                             Order: " + _vm._s(_vm.order_items.order_number) + "\n                         ")]), _vm._v(" "), _vm._l(_vm.order_items.order_details, function (data, i) {
+    return _c("div", {
+      key: i + data.pizza_number
+    }, [_c("p", {
+      staticClass: "mt-2"
+    }, [_c("b", [_vm._v("Pizza")]), _vm._v(" " + _vm._s(data.pizza_number) + ", " + _vm._s(data.size) + ", " + _vm._s(data.crust) + ", " + _vm._s(data.type))]), _vm._v(" "), _vm._l(data.toppings, function (data, i) {
+      return _c("ul", {
+        key: i + data.topping_number,
+        staticClass: "mb-3"
+      }, [_c("li", [_vm._v("\n                                     Toppings " + _vm._s(data.area) + "\n                                     "), _vm._l(data.topping_items, function (data, i) {
+        return _c("ul", {
+          key: i + data.name
+        }, [_c("li", [_vm._v(_vm._s(data.name))])]);
+      })], 2)]);
+    })], 2);
+  })], 2) : _vm._e()])], 1)])])]);
 };
 
 var staticRenderFns = [];
@@ -295,13 +316,13 @@ var saveOrderItem = /*#__PURE__*/function () {
 }();
 
 var getOrderItemsAsync = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(search) {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(search, page, paginate) {
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/orders?search=".concat(search));
+            return axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/orders?search=".concat(search, "&page=").concat(page, "&paginate=").concat(paginate));
 
           case 2:
             return _context2.abrupt("return", _context2.sent);
@@ -314,7 +335,7 @@ var getOrderItemsAsync = /*#__PURE__*/function () {
     }, _callee2);
   }));
 
-  return function getOrderItemsAsync(_x3) {
+  return function getOrderItemsAsync(_x3, _x4, _x5) {
     return _ref2.apply(this, arguments);
   };
 }();

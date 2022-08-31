@@ -104,7 +104,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       pageInfo: [],
       defaultSortDirection: 'asc',
       sortIcon: 'arrow-up',
-      sortIconSize: 'is-small'
+      sortIconSize: 'is-small',
+      paginate: 12
     };
   },
   methods: {
@@ -121,7 +122,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 page = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : 1;
                 search = '';
                 _context.next = 4;
-                return (0,_shared_api_services__WEBPACK_IMPORTED_MODULE_0__.getOrderItemsAsync)(search);
+                return (0,_shared_api_services__WEBPACK_IMPORTED_MODULE_0__.getOrderItemsAsync)(search, page, _this.paginate);
 
               case 4:
                 res = _context.sent;
@@ -129,6 +130,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 if (res.status === 200) {
                   console.log(res.data.results.data);
                   _this.orders = res.data.results.data;
+                  _this.pageInfo = res.data.results;
                 } else {
                   _this.notif('error occured.', 'is-danger');
 
@@ -302,84 +304,53 @@ var render = function render() {
     staticClass: "card-header-title"
   }, [_vm._v("\n            " + _vm._s(this.$route.name) + "\n        ")])]), _vm._v(" "), _c("div", {
     staticClass: "card-content"
-  }, [_c("div", {
-    staticClass: "content"
-  }, [_c("div", {
-    staticClass: "row pb-5"
-  }, [_c("div", {
-    staticClass: "col-md-4"
-  }, [_c("b-field", {
-    attrs: {
-      label: "Search Name,Company,Email"
-    }
-  }, [_c("search")], 1)], 1)]), _vm._v(" "), _c("b-table", {
-    attrs: {
-      data: _vm.orders,
-      "default-sort-direction": _vm.defaultSortDirection,
-      "sort-icon": _vm.sortIcon,
-      "sort-icon-size": _vm.sortIconSize,
-      hoverable: true,
-      "default-sort": "row.name",
-      "aria-next-label": "Next page",
-      "aria-previous-label": "Previous page",
-      "aria-page-label": "Page",
-      "aria-current-label": "Current page"
-    }
-  }, [_c("b-table-column", {
-    attrs: {
-      field: "id",
-      label: "ID",
-      width: "40",
-      numeric: ""
-    },
-    scopedSlots: _vm._u([{
-      key: "default",
-      fn: function fn(props) {
-        return [_vm._v("\n                    " + _vm._s(props.row.id) + "\n                ")];
-      }
-    }])
-  }), _vm._v(" "), _c("b-table-column", {
-    attrs: {
-      field: "order.order_number",
-      label: "Order Number"
-    },
-    scopedSlots: _vm._u([{
-      key: "default",
-      fn: function fn(props) {
-        return [_vm._v("\n                    " + _vm._s(props.row.order_number) + "\n                ")];
-      }
-    }])
-  }), _vm._v(" "), _c("b-table-column", {
-    attrs: {
-      field: "order.type",
-      label: "Pizza Details"
-    },
-    scopedSlots: _vm._u([{
-      key: "default",
-      fn: function fn(props) {
-        return [_c("div", [_c("table", [_c("thead", [_c("tr", [_c("th", [_vm._v("Pizza Number")]), _vm._v(" "), _c("th", [_vm._v("Type")]), _vm._v(" "), _c("th", [_vm._v("Crust")]), _vm._v(" "), _c("th", [_vm._v("Size")]), _vm._v(" "), _c("th", [_vm._v("Toppings")])])]), _vm._v(" "), _vm._l(props.row.order_details, function (data, i) {
-          return _c("tr", {
-            key: i + data.pizza_number
-          }, [_c("td", [_vm._v(_vm._s(data.pizza_number))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(data.type))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(data.crust))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(data.size))]), _vm._v(" "), _c("td", [_c("table", [_c("thead", [_c("tr", [_c("th", [_vm._v("Topping Number")]), _vm._v(" "), _c("th", [_vm._v("Area")]), _vm._v(" "), _c("th", [_vm._v("Topping Item")])])]), _vm._v(" "), _vm._l(data.toppings, function (data, i) {
-            return _c("tr", {
-              key: i + data.topping_number
-            }, [_c("td", [_vm._v(_vm._s(data.topping_number))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(data.area))]), _vm._v(" "), _c("td", _vm._l(data.topping_items, function (data, i) {
-              return _c("tr", {
-                key: i + data.name
-              }, [_c("td", [_vm._v(_vm._s(data.topping_number))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(data.name))])]);
-            }), 0)]);
-          })], 2)])]);
-        })], 2)])];
-      }
-    }])
-  })], 1), _vm._v(" "), _c("Pagination", {
+  }, [_c("Pagination", {
     attrs: {
       pageInfo: _vm.pageInfo.pagination
     },
     on: {
       change: _vm.getOrders
     }
-  })], 1)])]);
+  }), _vm._v(" "), _c("div", {
+    staticClass: "content mt-5"
+  }, [_c("div", {
+    staticClass: "row pb-5"
+  }, [_c("div", {
+    staticClass: "col-md-4"
+  }, [_c("b-field", {
+    attrs: {
+      label: "Size, Crust, Type and/or Number of Toppings"
+    }
+  }, [_c("search")], 1)], 1)]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, _vm._l(_vm.orders, function (data, i) {
+    return _c("div", {
+      key: i + data.order_number,
+      staticClass: "col-md-3 d-lg-flex"
+    }, [_c("div", {
+      staticClass: "card mt-3"
+    }, [_c("div", {
+      staticClass: "card-content"
+    }, [_c("div", {
+      staticClass: "content"
+    }, [_c("h3", [_vm._v("\n                                    Order: " + _vm._s(data.order_number) + "\n                                ")]), _vm._v(" "), _vm._l(data.order_details, function (data, i) {
+      return _c("div", {
+        key: i + data.pizza_number
+      }, [_c("p", {
+        staticClass: "mt-2"
+      }, [_c("b", [_vm._v("Pizza")]), _vm._v(" " + _vm._s(data.pizza_number) + ", " + _vm._s(data.size) + ", " + _vm._s(data.crust) + ", " + _vm._s(data.type))]), _vm._v(" "), _vm._l(data.toppings, function (data, i) {
+        return _c("ul", {
+          key: i + data.topping_number,
+          staticClass: "mb-3"
+        }, [_c("li", [_vm._v("\n                                            Toppings " + _vm._s(data.area) + "\n                                            "), _vm._l(data.topping_items, function (data, i) {
+          return _c("ul", {
+            key: i + data.name,
+            staticClass: "mb-0"
+          }, [_c("li", [_vm._v(_vm._s(data.name))])]);
+        })], 2)]);
+      })], 2);
+    })], 2)])])]);
+  }), 0)])], 1)]);
 };
 
 var staticRenderFns = [];
@@ -442,13 +413,13 @@ var saveOrderItem = /*#__PURE__*/function () {
 }();
 
 var getOrderItemsAsync = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(search) {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(search, page, paginate) {
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/orders?search=".concat(search));
+            return axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/orders?search=".concat(search, "&page=").concat(page, "&paginate=").concat(paginate));
 
           case 2:
             return _context2.abrupt("return", _context2.sent);
@@ -461,7 +432,7 @@ var getOrderItemsAsync = /*#__PURE__*/function () {
     }, _callee2);
   }));
 
-  return function getOrderItemsAsync(_x3) {
+  return function getOrderItemsAsync(_x3, _x4, _x5) {
     return _ref2.apply(this, arguments);
   };
 }();

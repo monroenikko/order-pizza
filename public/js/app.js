@@ -5659,13 +5659,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       pizzaDetails: {
         sizes: ['small', 'medium', 'large'],
         crusts: ['thin', 'thick', 'hand-tossed', 'deep dish'],
-        types: ['Hawaiian', 'Chicken Fajita', 'Pepperoni Feast', 'NYF', 'Manhattan Meat Lover', 'custom'],
+        types: ['Hawaiian', 'Chicken Fajita', 'Pepperoni Feast', 'NYF', 'Manhattan Meat Lover', 'BBQ Chicken', 'Garden Special', 'Roasted and garlic Shrimp', 'Four Cheese', 'Patty Melt', 'custom'],
         toppingAreas: {
           0: 'Whole',
           1: 'First-Half',
@@ -5701,20 +5704,23 @@ __webpack_require__.r(__webpack_exports__);
       var xml = this.convertToXml(order);
 
       if (xml.getElementsByTagName('parsererror').length) {
-        return this.errorMessages.invalidFormat;
+        this.hasError = true;
+        return this.messageError.push(this.errorMessages.invalidFormat);
       } // check if order has number
 
 
       var orderTags = xml.getElementsByTagName('order');
 
       if (orderTags.length === 0) {
-        return this.errorMessages.noOrder;
+        this.hasError = true;
+        return this.messageError.push(this.errorMessages.noOrder);
       }
 
       var newOrder = orderTags[0];
 
       if (!newOrder.hasAttribute('number') || newOrder.getAttribute('number').trim() === '') {
-        return this.errorMessages.noOrderNumber;
+        this.hasError = true;
+        return this.messageError.push(this.errorMessages.noOrderNumber);
       }
 
       var pizzas = newOrder.getElementsByTagName('pizza');
@@ -5723,16 +5729,19 @@ __webpack_require__.r(__webpack_exports__);
         var pizza = pizzas[i]; // check if pizza numbers are in order and starts at 1.
 
         if (parseInt(pizza.getAttribute('number')) !== i + 1) {
-          return this.errorMessages.pizzaNumberOrder;
+          this.hasError = true;
+          return this.messageError.push(this.errorMessages.pizzaNumberOrder);
         } // check if size is small, medium, or large.
 
 
         var size = pizza.getElementsByTagName('size');
 
         if (size.length === 0) {
-          return this.errorMessages.noSize;
+          this.hasError = true;
+          return this.messageError.push(this.errorMessages.noSize);
         } else if (size.length > 1) {
-          return this.errorMessages.oneSizePerPizza;
+          this.hasError = true;
+          return this.messageError.push(this.errorMessages.oneSizePerPizza);
         }
 
         for (var j = 0; j < this.pizzaDetails.sizes.length; j++) {
@@ -5741,7 +5750,8 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           if (j === this.pizzaDetails.sizes.length - 1) {
-            return this.errorMessages.invalidSize;
+            this.hasError = true;
+            return this.messageError.push(this.errorMessages.invalidSize);
           }
         } // check if crust is thin, thick, hand-tossed, deep dish.
 
@@ -5749,9 +5759,11 @@ __webpack_require__.r(__webpack_exports__);
         var crust = pizza.getElementsByTagName('crust');
 
         if (crust.length === 0) {
-          return this.errorMessages.noCrust;
+          this.hasError = true;
+          return this.messageError.push(this.errorMessages.noCrust);
         } else if (crust.length > 1) {
-          return this.errorMessages.oneCrustPerPizza;
+          this.hasError = true;
+          return this.messageError.push(this.errorMessages.oneCrustPerPizza);
         }
 
         for (var _j = 0; _j < this.pizzaDetails.crusts.length; _j++) {
@@ -5762,15 +5774,16 @@ __webpack_require__.r(__webpack_exports__);
           if (_j === this.pizzaDetails.crusts.length - 1) {
             return this.errorMessages.invalidCrust;
           }
-        } // check if type is Hawaiian, Chicken Fajita, Pepperoni Feast, or custom.
+        } // check if type
 
 
         var pizzaType = pizza.getElementsByTagName('type');
 
         if (pizzaType.length === 0) {
-          return this.errorMessages.noType;
+          this.hasError = true;
+          return this.messageError.push(this.errorMessages.noType);
         } else if (pizzaType.length > 1) {
-          return this.errorMessages.oneTypePerPizza;
+          return this.messageError.push(this.errorMessages.oneTypePerPizza);
         }
 
         for (var _j2 = 0; _j2 < this.pizzaDetails.types.length; _j2++) {
@@ -5779,7 +5792,8 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           if (_j2 === this.pizzaDetails.types.length - 1) {
-            return this.errorMessages.invalidType;
+            this.hasError = true;
+            return this.messageError.push(this.errorMessages.invalidType);
           }
         } // check toppings.
 
@@ -5787,22 +5801,27 @@ __webpack_require__.r(__webpack_exports__);
         var toppingAreas = pizza.getElementsByTagName('toppings');
 
         if (pizzaType[0].textContent.toLowerCase() !== 'custom' && toppingAreas.length > 0) {
-          return this.errorMessages.noToppingsAllowedForPizzaType;
+          this.hasError = true;
+          return this.messageError.push(this.errorMessages.noToppingsAllowedForPizzaType);
+          ;
         } else if (toppingAreas.length > this.pizzaDetails.maxCustomToppingAreas) {
-          return this.errorMessages.maxCustomToppingAreas;
+          this.hasError = true;
+          return this.messageError.push(this.errorMessages.maxCustomToppingAreas);
         }
 
         for (var _j3 = 0; _j3 < toppingAreas.length; _j3++) {
           var toppingArea = toppingAreas[_j3]; // check if topping area is valid
 
           if (!(parseInt(toppingArea.getAttribute('area')) in this.pizzaDetails.toppingAreas)) {
-            return this.errorMessages.invalidToppingArea;
+            this.hasError = true;
+            return this.messageError.push(this.errorMessages.invalidToppingArea);
           }
 
           var toppings = toppingArea.getElementsByTagName('item');
 
           if (toppings.length > this.pizzaDetails.maxCustomToppingItemsPerArea) {
-            return this.errorMessages.maxCustomToppingItemsPerArea;
+            this.hasError = true;
+            return this.messageError.push(this.errorMessages.maxCustomToppingItemsPerArea);
           }
         }
       }
@@ -5818,6 +5837,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.maxCustomToppingAreas = "Up to ".concat(this.pizzaDetails.maxCustomToppingAreas, " topping areas allowed.");
     this.maxCustomToppingItemsPerArea = "Up to ".concat(this.pizzaDetails.maxCustomToppingItemsPerArea, " toppings per area allowed.");
+    this.invalidType = "Pizza type must be ".concat(this.types, ".");
   }
 });
 
