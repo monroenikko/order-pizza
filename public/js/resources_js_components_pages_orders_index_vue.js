@@ -128,13 +128,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 res = _context.sent;
 
                 if (res.status === 200) {
-                  console.log(res.data.results.data);
+                  // console.log(res.data.results.data);
                   _this.orders = res.data.results.data;
                   _this.pageInfo = res.data.results;
                 } else {
-                  _this.notif('error occured.', 'is-danger');
+                  _this.notif('error occured.', 'is-danger'); // console.log(res.data.errors);
 
-                  console.log(res.data.errors);
                 }
 
               case 6:

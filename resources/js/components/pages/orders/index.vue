@@ -76,12 +76,12 @@ export default {
             let search = '';
             const res = await getOrderItemsAsync(search, page, this.paginate);
             if(res.status === 200){
-                console.log(res.data.results.data);
+                // console.log(res.data.results.data);
                 this.orders = res.data.results.data;
                 this.pageInfo = res.data.results;
             }else{
                 this.notif('error occured.', 'is-danger');
-                console.log(res.data.errors);
+                // console.log(res.data.errors);
             }
         },
         async getSearchDataList() {
