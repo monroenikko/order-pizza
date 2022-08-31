@@ -27,10 +27,9 @@ class OrderService implements OrderServiceInterface
     public function index($data)
     {
         try {
-
             $orders = $this->repository->index($data)
                 ->orderBY('id', 'DESC')
-                ->paginate($data['paginate']);
+                ->paginate((integer)$data['paginate']);
 
             return $this->success(
                     RulesMessage::order['success']['listed'],

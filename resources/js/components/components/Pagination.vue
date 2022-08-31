@@ -2,7 +2,7 @@
     <div>
         <b-pagination
             v-model="pageInfo.current_page"
-            :total="pageInfo.total"
+            :total="pageInfo['total']"
             :per-page="pageInfo.per_page"
             :range-before="rangeBefore"
             :range-after="rangeAfter"
@@ -29,7 +29,7 @@ export default {
     ],
     data(){
         return {
-            pageInfo:{},
+            // pageInfo:{},
             rangeBefore: 3,
             rangeAfter: 1,
             order: '',

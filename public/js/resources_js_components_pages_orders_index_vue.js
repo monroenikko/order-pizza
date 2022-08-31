@@ -16,7 +16,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ['pageInfo'],
   data: function data() {
     return {
-      pageInfo: {},
+      // pageInfo:{},
       rangeBefore: 3,
       rangeAfter: 1,
       order: '',
@@ -205,7 +205,7 @@ var render = function render() {
 
   return _c("div", [_c("b-pagination", {
     attrs: {
-      total: _vm.pageInfo.total,
+      total: _vm.pageInfo["total"],
       "per-page": _vm.pageInfo.per_page,
       "range-before": _vm.rangeBefore,
       "range-after": _vm.rangeAfter,
